@@ -50,24 +50,11 @@
             background: #000; border-radius: 20px; overflow: hidden;
             border: 4px solid rgba(255,255,255,0.1);
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            transition: transform 0.3s; cursor: pointer;
+            transition: transform 0.3s;
         }
         .video-frame:hover { transform: scale(1.02); }
-        .hero-video-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-
-        .video-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10; transition: opacity 0.3s;
-        }
-        .custom-play-btn {
-            width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border: 2px solid #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); margin-bottom: 20px;
-            transition: transform 0.2s, background 0.2s;
-        }
-        .custom-play-btn::after { content: ''; display: block; width: 0; height: 0; border-left: 20px solid #fff; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 6px; }
-        .video-frame:hover .custom-play-btn { transform: scale(1.1); background: var(--seoul-blue); border-color: var(--seoul-blue); }
-        .video-title-overlay { color: #fff; font-size: 22px; font-weight: 800; background: rgba(0, 0, 0, 0.6); padding: 10px 24px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.3); text-shadow: 0 2px 4px rgba(0,0,0,0.5); letter-spacing: -0.5px; backdrop-filter: blur(4px); }
+        /* YouTube Iframe Full Fill */
+        .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
         /* 3. Ticker */
         .ticker-container { max-width: 1240px; margin: -180px auto 80px; padding: 0 20px; position: relative; z-index: 10; }
@@ -95,18 +82,62 @@
 
         .regional-box { display: flex; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid var(--border); overflow: hidden; min-height: 600px; }
         
-        .map-area { flex: 1; background: #f8f9fa; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border); }
-        .map-guide-text { font-size: 14px; color: #666; font-weight: 600; background: #e9ecef; padding: 8px 16px; border-radius: 20px; margin-bottom: 25px; }
+        .map-area { 
+            flex: 1; background: #f8f9fa; padding: 30px; 
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            border-right: 1px solid var(--border); 
+        }
+        
+        .map-guide-text {
+            font-size: 14px; color: #666; font-weight: 600;
+            background: #e9ecef; padding: 8px 16px; border-radius: 20px;
+            margin-bottom: 25px; 
+        }
+
         .map-wrapper { position: relative; width: 100%; max-width: 480px; }
         .seoul-map-img { width: 100%; height: auto; display: block; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.1)); border-radius: 12px; }
 
-        .map-spot { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); cursor: pointer; z-index: 5; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .spot-dot { width: 18px; height: 18px; background-color: var(--seoul-blue); border: 3px solid rgba(255,255,255,0.9); border-radius: 50%; box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); animation: pulse-blue 2s infinite; margin-bottom: 6px; transition: all 0.3s; }
-        .spot-label { font-size: 13px; font-weight: 800; color: #495057; background: rgba(255,255,255,0.95); padding: 5px 12px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); white-space: nowrap; transition: all 0.3s; opacity: 0.9; }
+        /* Interactive Hotspots */
+        .map-spot {
+            position: absolute;
+            display: flex; flex-direction: column; align-items: center;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .spot-dot {
+            width: 18px; height: 18px;
+            background-color: var(--seoul-blue);
+            border: 3px solid rgba(255,255,255,0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7);
+            animation: pulse-blue 2s infinite;
+            margin-bottom: 6px;
+            transition: all 0.3s;
+        }
+
+        .spot-label {
+            font-size: 13px; font-weight: 800; color: #495057;
+            background: rgba(255,255,255,0.95);
+            padding: 5px 12px; border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            transition: all 0.3s;
+            opacity: 0.9;
+        }
+
         .map-spot:hover { z-index: 10; transform: translate(-50%, -60%); }
         .map-spot:hover .spot-dot, .map-spot.active .spot-dot { background-color: #fff; border-color: var(--seoul-blue); transform: scale(1.3); animation: none; box-shadow: 0 0 0 4px rgba(0, 82, 164, 0.2); }
         .map-spot:hover .spot-label, .map-spot.active .spot-label { background-color: var(--seoul-blue); color: #fff; box-shadow: 0 4px 15px rgba(0, 82, 164, 0.4); opacity: 1; }
-        @keyframes pulse-blue { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 82, 164, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0); } }
+
+        @keyframes pulse-blue {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 82, 164, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0); }
+        }
 
         .spot-jongno { top: 40%; left: 50%; }
         .spot-mapo { top: 55%; left: 36%; }
@@ -114,41 +145,50 @@
         .spot-yeongdeungpo { top: 71%; left: 35%; }
         .spot-gangnam { top: 75%; left: 68%; }
 
-        /* [수정] Info Area Styling */
-        .info-area { flex: 1.4; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
+        /* [수정] Info Area: 상단 정렬 및 높이 고정으로 흔들림 방지 */
+        .info-area { 
+            flex: 1.4; padding: 50px; 
+            display: flex; flex-direction: column; 
+            justify-content: flex-start; /* 상단 정렬 */
+        }
         .district-title { font-size: 36px; font-weight: 800; color: var(--black); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
         .district-badge { background: var(--seoul-blue); color: #fff; font-size: 15px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
-        .district-desc { color: var(--dark-gray); margin-bottom: 40px; font-size: 17px; line-height: 1.6; word-break: keep-all; min-height: 60px; }
+        
+        /* [수정] 설명 높이 더 넉넉하게 고정 */
+        .district-desc { 
+            color: var(--dark-gray); 
+            margin-bottom: 40px; 
+            font-size: 17px; 
+            line-height: 1.6; 
+            word-break: keep-all; 
+            min-height: 72px; /* 3줄까지 커버 가능하도록 높이 증가 */
+        }
 
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .info-card { 
             background: #fff; border: 1px solid var(--border); padding: 25px; 
             border-radius: 16px; transition: transform 0.2s; 
             display: flex; flex-direction: column; justify-content: space-between;
-            min-height: 160px; /* 높이 약간 증가 */
+            min-height: 160px;
         }
         .info-card:hover { transform: translateY(-3px); border-color: var(--seoul-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        
         .ic-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        
-        /* [수정] 아이콘 크기 확대 */
         .ic-icon { font-size: 42px; line-height: 1; }
-        
         .ic-title-group { display: flex; flex-direction: column; gap: 4px; }
         .ic-label { font-size: 15px; color: var(--dark-gray); font-weight: 700; }
-        
-        /* [추가] 기준 시점 스타일 */
         .ic-period { font-size: 12px; color: var(--mid-gray); font-weight: 500; }
-
         .ic-value-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 12px; }
         .ic-value { font-size: 26px; font-weight: 800; color: var(--black); line-height: 1; }
-        
-        /* [추가] 비교 문구 그룹 */
         .ic-trend-group { display: flex; flex-direction: column; align-items: flex-start; }
         .ic-trend-label { font-size: 11px; color: var(--mid-gray); margin-bottom: 2px; }
         .ic-trend { font-size: 14px; font-weight: 700; }
         
-        .ic-detail { font-size: 13px; color: var(--dark-gray); background: #f1f3f5; padding: 10px; border-radius: 8px; line-height: 1.4; min-height: 54px; display: flex; align-items: center; }
+        /* [수정] 상세 코멘트 높이 고정 */
+        .ic-detail { 
+            font-size: 13px; color: var(--dark-gray); background: #f1f3f5; padding: 10px; border-radius: 8px; line-height: 1.4; 
+            min-height: 60px; /* 3줄 정도 고정 */
+            display: flex; align-items: center; 
+        }
 
         /* 5. Category Grid */
         .section-header { margin-bottom: 40px; border-left: 5px solid var(--seoul-blue); padding-left: 20px; }
@@ -214,15 +254,14 @@
                 </p>
             </div>
             <div class="hero-video">
-                <div class="video-frame" onclick="playVideo()">
-                    <div class="video-overlay" id="videoOverlay">
-                        <div class="custom-play-btn"></div>
-                        <div class="video-title-overlay">서울 데이터 허브 경제관 소개</div>
-                    </div>
-                    <video id="heroVideo" class="hero-video-player" poster="https://plus.unsplash.com/premium_photo-1683288662019-c92caea8276d?q=80&w=1200&auto=format&fit=crop">
-                        <source src="intro_video.mp4" type="video/mp4">
-                        브라우저가 동영상을 지원하지 않습니다.
-                    </video>
+                <div class="video-frame">
+                    <iframe 
+                        src="https://www.youtube.com/embed/niDAzgVMNxM?autoplay=1&mute=1&controls=1&loop=1&playlist=niDAzgVMNxM&origin=https://github.com" 
+                        title="Seoul Economic Video" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -278,13 +317,25 @@
         <div class="regional-box">
             <div class="map-area">
                 <div class="map-guide-text">▼ 주요 자치구를 클릭해보세요</div>
+                
                 <div class="map-wrapper">
                     <img src="map_image.png" alt="서울시 자치구 지도" class="seoul-map-img">
-                    <div class="map-spot spot-mapo" onclick="updateDistrict('mapo')" id="spot-mapo"><div class="spot-dot"></div><div class="spot-label">마포구</div></div>
-                    <div class="map-spot spot-jongno" onclick="updateDistrict('jongno')" id="spot-jongno"><div class="spot-dot"></div><div class="spot-label">종로구</div></div>
-                    <div class="map-spot spot-seongdong" onclick="updateDistrict('seongdong')" id="spot-seongdong"><div class="spot-dot"></div><div class="spot-label">성동구</div></div>
-                    <div class="map-spot spot-yeongdeungpo" onclick="updateDistrict('yeongdeungpo')" id="spot-yeongdeungpo"><div class="spot-dot"></div><div class="spot-label">영등포구</div></div>
-                    <div class="map-spot spot-gangnam active" onclick="updateDistrict('gangnam')" id="spot-gangnam"><div class="spot-dot"></div><div class="spot-label">강남구</div></div>
+                    
+                    <div class="map-spot spot-mapo" onclick="updateDistrict('mapo')" id="spot-mapo">
+                        <div class="spot-dot"></div><div class="spot-label">마포구</div>
+                    </div>
+                    <div class="map-spot spot-jongno" onclick="updateDistrict('jongno')" id="spot-jongno">
+                        <div class="spot-dot"></div><div class="spot-label">종로구</div>
+                    </div>
+                    <div class="map-spot spot-seongdong" onclick="updateDistrict('seongdong')" id="spot-seongdong">
+                        <div class="spot-dot"></div><div class="spot-label">성동구</div>
+                    </div>
+                    <div class="map-spot spot-yeongdeungpo" onclick="updateDistrict('yeongdeungpo')" id="spot-yeongdeungpo">
+                        <div class="spot-dot"></div><div class="spot-label">영등포구</div>
+                    </div>
+                    <div class="map-spot spot-gangnam active" onclick="updateDistrict('gangnam')" id="spot-gangnam">
+                        <div class="spot-dot"></div><div class="spot-label">강남구</div>
+                    </div>
                 </div>
             </div>
 
@@ -507,6 +558,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -626,6 +678,7 @@
         function playVideo() {
             const video = document.getElementById('heroVideo');
             const overlay = document.getElementById('videoOverlay');
+            
             if (video.paused) {
                 video.play();
                 video.controls = true;
