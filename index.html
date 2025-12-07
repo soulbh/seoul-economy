@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서울 데이터 허브 | 경제관</title>
+    <style>
+        /* 1. 기본 설정 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', 'Malgun Gothic', sans-serif; }
+        body { background-color: #f8f9fa; color: #333; line-height: 1.5; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; border: none; background: transparent; }
+        
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+        
+        :root {
+            --black: #212529; --dark-gray: #495057; --mid-gray: #868e96; --light-gray: #e9ecef;
+            --bg-gray: #f1f3f5; --white: #ffffff; --border: #dee2e6;
+            --seoul-blue: #0052A4; --seoul-sky: #4CA4F5; --increase-red: #D32F2F; --decrease-blue: #1976D2; 
+        }
+
+        /* 2. Hero Section */
+        .hero-wrap {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white; padding: 100px 0 220px; margin-bottom: 60px;
+            position: relative; overflow: hidden;
+        }
+        .hero-grid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 1;
+        }
+        .hero-aurora {
+            position: absolute; width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(76, 164, 245, 0.3) 0%, rgba(0,0,0,0) 70%);
+            top: -200px; right: -100px; border-radius: 50%; filter: blur(60px); z-index: 1;
+            animation: auroraMove 15s infinite alternate;
+        }
+        @keyframes auroraMove { 0% { transform: translate(0, 0); } 100% { transform: translate(-50px, 50px); } }
+
+        .hero-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; position: relative; z-index: 5; }
+        .hero-text { flex: 0.8; } 
+        .hero-title { font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 24px; letter-spacing: -1.5px; word-break: keep-all; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .text-highlight { color: #4CA4F5; }
+        .hero-desc { font-size: 19px; color: rgba(255,255,255,0.9); line-height: 1.6; font-weight: 300; margin-bottom: 0; padding-left: 20px; border-left: 4px solid #4CA4F5; }
+        
+        .hero-video { flex: 1.2; max-width: 700px; }
+        .video-frame {
+            position: relative; padding-bottom: 56.25%; height: 0;
+            background: #000; border-radius: 20px; overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            transition: transform 0.3s; cursor: pointer;
+        }
+        .video-frame:hover { transform: scale(1.02); }
+        .hero-video-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        .video-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10; transition: opacity 0.3s;
+        }
+        .custom-play-btn {
+            width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border: 2px solid #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); margin-bottom: 20px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .custom-play-btn::after { content: ''; display: block; width: 0; height: 0; border-left: 20px solid #fff; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 6px; }
+        .video-frame:hover .custom-play-btn { transform: scale(1.1); background: var(--seoul-blue); border-color: var(--seoul-blue); }
+        .video-title-overlay { color: #fff; font-size: 22px; font-weight: 800; background: rgba(0, 0, 0, 0.6); padding: 10px 24px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.3); text-shadow: 0 2px 4px rgba(0,0,0,0.5); letter-spacing: -0.5px; backdrop-filter: blur(4px); }
+
+        /* 3. Ticker */
+        .ticker-container { max-width: 1240px; margin: -180px auto 80px; padding: 0 20px; position: relative; z-index: 10; }
+        .ticker-header { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .ticker-header h3 { font-size: 20px; font-weight: 700; margin: 0; }
+        .ticker-header::before { content:''; display:block; width:6px; height:20px; background:var(--seoul-sky); border-radius:3px;}
+
+        .ticker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; box-shadow: 0 20px 50px rgba(0,0,0,0.15); border-radius: 20px; background: var(--white); border: 1px solid var(--border); overflow: hidden; }
+        .metric-link { text-decoration: none; display: block; height: 100%; border-right: 1px solid var(--light-gray); }
+        .metric-link:last-child { border-right: none; }
+        .metric-item { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 35px 20px; transition: background 0.2s; position: relative; height: 100%; }
+        .metric-item:hover { background: #f8f9fa; }
+        .metric-item:hover::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--seoul-blue); }
+        .m-label { font-size: 15px; font-weight: 700; color: var(--mid-gray); margin-bottom: 8px; }
+        .m-value { font-size: 28px; font-weight: 900; color: var(--black); margin-bottom: 6px; letter-spacing: -0.5px; }
+        .m-delta { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+        .m-delta.up { color: var(--increase-red); } .m-delta.down { color: var(--decrease-blue); }
+        .m-date { font-size: 12px; color: var(--mid-gray); background: var(--bg-gray); padding: 4px 10px; border-radius: 4px; font-weight: 500; }
+
+        /* 4. Regional Analysis */
+        .regional-section { padding: 0 0 100px; }
+        .regional-header { margin-bottom: 40px; text-align: center; }
+        .regional-header h2 { font-size: 32px; font-weight: 800; color: var(--black); margin-bottom: 10px; }
+        .regional-header p { color: var(--dark-gray); font-size: 16px; }
+
+        .regional-box { display: flex; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid var(--border); overflow: hidden; min-height: 600px; }
+        
+        .map-area { flex: 1; background: #f8f9fa; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border); }
+        .map-guide-text { font-size: 14px; color: #666; font-weight: 600; background: #e9ecef; padding: 8px 16px; border-radius: 20px; margin-bottom: 25px; }
+        .map-wrapper { position: relative; width: 100%; max-width: 480px; }
+        .seoul-map-img { width: 100%; height: auto; display: block; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.1)); border-radius: 12px; }
+
+        .map-spot { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); cursor: pointer; z-index: 5; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .spot-dot { width: 18px; height: 18px; background-color: var(--seoul-blue); border: 3px solid rgba(255,255,255,0.9); border-radius: 50%; box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); animation: pulse-blue 2s infinite; margin-bottom: 6px; transition: all 0.3s; }
+        .spot-label { font-size: 13px; font-weight: 800; color: #495057; background: rgba(255,255,255,0.95); padding: 5px 12px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); white-space: nowrap; transition: all 0.3s; opacity: 0.9; }
+        .map-spot:hover { z-index: 10; transform: translate(-50%, -60%); }
+        .map-spot:hover .spot-dot, .map-spot.active .spot-dot { background-color: #fff; border-color: var(--seoul-blue); transform: scale(1.3); animation: none; box-shadow: 0 0 0 4px rgba(0, 82, 164, 0.2); }
+        .map-spot:hover .spot-label, .map-spot.active .spot-label { background-color: var(--seoul-blue); color: #fff; box-shadow: 0 4px 15px rgba(0, 82, 164, 0.4); opacity: 1; }
+        @keyframes pulse-blue { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 82, 164, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0); } }
+
+        .spot-jongno { top: 40%; left: 50%; }
+        .spot-mapo { top: 55%; left: 36%; }
+        .spot-seongdong { top: 56%; left: 63%; }
+        .spot-yeongdeungpo { top: 71%; left: 35%; }
+        .spot-gangnam { top: 75%; left: 68%; }
+
+        /* [수정] Info Area Styling */
+        .info-area { flex: 1.4; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
+        .district-title { font-size: 36px; font-weight: 800; color: var(--black); margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .district-badge { background: var(--seoul-blue); color: #fff; font-size: 15px; padding: 6px 14px; border-radius: 20px; font-weight: 600; }
+        .district-desc { color: var(--dark-gray); margin-bottom: 40px; font-size: 17px; line-height: 1.6; word-break: keep-all; min-height: 60px; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .info-card { 
+            background: #fff; border: 1px solid var(--border); padding: 25px; 
+            border-radius: 16px; transition: transform 0.2s; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 160px; /* 높이 약간 증가 */
+        }
+        .info-card:hover { transform: translateY(-3px); border-color: var(--seoul-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        .ic-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        
+        /* [수정] 아이콘 크기 확대 */
+        .ic-icon { font-size: 42px; line-height: 1; }
+        
+        .ic-title-group { display: flex; flex-direction: column; gap: 4px; }
+        .ic-label { font-size: 15px; color: var(--dark-gray); font-weight: 700; }
+        
+        /* [추가] 기준 시점 스타일 */
+        .ic-period { font-size: 12px; color: var(--mid-gray); font-weight: 500; }
+
+        .ic-value-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 12px; }
+        .ic-value { font-size: 26px; font-weight: 800; color: var(--black); line-height: 1; }
+        
+        /* [추가] 비교 문구 그룹 */
+        .ic-trend-group { display: flex; flex-direction: column; align-items: flex-start; }
+        .ic-trend-label { font-size: 11px; color: var(--mid-gray); margin-bottom: 2px; }
+        .ic-trend { font-size: 14px; font-weight: 700; }
+        
+        .ic-detail { font-size: 13px; color: var(--dark-gray); background: #f1f3f5; padding: 10px; border-radius: 8px; line-height: 1.4; min-height: 54px; display: flex; align-items: center; }
+
+        /* 5. Category Grid */
+        .section-header { margin-bottom: 40px; border-left: 5px solid var(--seoul-blue); padding-left: 20px; }
+        .section-header h2 { font-size: 28px; font-weight: 800; color: var(--black); margin-bottom: 8px; }
+        .section-header p { font-size: 16px; color: var(--dark-gray); }
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-bottom: 100px; }
+        .card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: transform 0.3s, box-shadow 0.3s; cursor: default; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0, 82, 164, 0.1); border-color: var(--seoul-blue); }
+        .card-visual { height: 160px; overflow: hidden; position: relative; border-bottom: 1px solid var(--light-gray); background-color: #f1f3f5; }
+        .card-visual img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .card:hover .card-visual img { transform: scale(1.05); }
+        .card-body { padding: 28px; flex: 1; display: flex; flex-direction: column; }
+        .card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .card-icon { font-size: 22px; }
+        .card-title { font-size: 20px; font-weight: 800; color: var(--black); transition: color 0.3s; }
+        .card:hover .card-title { color: var(--seoul-blue); }
+        .card-desc { font-size: 15px; color: var(--dark-gray); margin-bottom: 20px; line-height: 1.5; height: 72px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+        .data-list { margin-top: 0; border-top: 1px dashed var(--border); padding-top: 16px; }
+        .data-item-link { text-decoration: none; display: block; transition: transform 0.2s; }
+        .data-item-link:hover { transform: translateX(5px); }
+        .data-item { font-size: 14px; color: var(--mid-gray); margin-bottom: 6px; display: flex; align-items: flex-start; line-height: 1.4; transition: color 0.2s; }
+        .data-item::before { content: ''; display: inline-block; width: 4px; height: 4px; background: var(--mid-gray); border-radius: 50%; margin-right: 10px; margin-top: 8px; flex-shrink: 0; transition: background 0.2s; }
+        .card:hover .data-item { color: var(--dark-gray); }
+        .card:hover .data-item::before { background: var(--seoul-blue); }
+        .data-item-link:hover .data-item { color: var(--seoul-blue); font-weight: 600; }
+
+        /* 반응형 */
+        @media (max-width: 960px) {
+            .hero-inner { flex-direction: column; align-items: flex-start; }
+            .hero-video { width: 100%; max-width: 100%; margin-top: 40px; }
+            .hero-text { flex: 1; } 
+            .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+            .metric-item { border-right: none; border-bottom: 1px solid var(--light-gray); }
+            .metric-item:nth-last-child(-n+2) { border-bottom: none; }
+            .cat-grid { grid-template-columns: repeat(2, 1fr); }
+            .regional-box { flex-direction: column; }
+            .map-area { border-right: none; border-bottom: 1px solid var(--border); width: 100%; flex: auto; padding-top: 30px; }
+            .info-area { padding: 30px; width: 100%; flex: auto; }
+        }
+        @media (max-width: 600px) {
+            .ticker-grid { grid-template-columns: 1fr; }
+            .cat-grid { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero-wrap">
+        <div class="hero-grid"></div>
+        <div class="hero-aurora"></div>
+
+        <div class="container hero-inner">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    데이터로 집대성한<br>
+                    <span class="text-highlight">서울 경제의 모든 순간</span>
+                </h1>
+                <p class="hero-desc">
+                    5,161만 원의 1인당 GRDP부터 우리 동네 매출 변화까지.<br>
+                    공공 통계와 민간 데이터가 결합된 <strong>서울시 최대의 경제 지표 아카이브</strong>.
+                </p>
+            </div>
+            <div class="hero-video">
+                <div class="video-frame" onclick="playVideo()">
+                    <div class="video-overlay" id="videoOverlay">
+                        <div class="custom-play-btn"></div>
+                        <div class="video-title-overlay">서울 데이터 허브 경제관 소개</div>
+                    </div>
+                    <video id="heroVideo" class="hero-video-player" poster="https://plus.unsplash.com/premium_photo-1683288662019-c92caea8276d?q=80&w=1200&auto=format&fit=crop">
+                        <source src="intro_video.mp4" type="video/mp4">
+                        브라우저가 동영상을 지원하지 않습니다.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="ticker-container">
+        <div class="ticker-header">
+            <h3>서울시 주요 경제 지표</h3>
+        </div>
+
+        <div class="ticker-grid">
+            <a href="https://bspdev.kro.kr/bsp/wgs/economics/economics01.do" target="_blank" class="metric-link">
+                <div class="metric-item">
+                    <div class="m-label">1인당 GRDP</div>
+                    <div class="m-value">5,161만 원</div>
+                    <div class="m-delta up">▲ 2.8%</div>
+                    <div class="m-date">2022년 확정</div>
+                </div>
+            </a>
+            <a href="https://bspdev.kro.kr/bsp/wgs/economics/economics29.do" target="_blank" class="metric-link">
+                <div class="metric-item">
+                    <div class="m-label">소비자물가지수</div>
+                    <div class="m-value">116.33</div>
+                    <div class="m-delta down">▼ 0.2%</div>
+                    <div class="m-date">2025.11 기준</div>
+                </div>
+            </a>
+            <a href="https://bspdev.kro.kr/bsp/wgs/economics/economics25.do" target="_blank" class="metric-link">
+                <div class="metric-item">
+                    <div class="m-label">서울시 고용률</div>
+                    <div class="m-value">61.6%</div>
+                    <div class="m-delta up">▲ 1.4%p</div>
+                    <div class="m-date">2024.02 기준</div>
+                </div>
+            </a>
+            <a href="https://bspdev.kro.kr/bsp/wgs/economics/economics43.do" target="_blank" class="metric-link">
+                <div class="metric-item">
+                    <div class="m-label">주택매매 변동률</div>
+                    <div class="m-value" style="color:#D32F2F">+1.19%</div>
+                    <div class="m-delta up">▲ 1.19%</div>
+                    <div class="m-date">2025.10 기준</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="container regional-section">
+        <div class="regional-header">
+            <h2>자치구별 경제 지표 요약</h2>
+            <p>지도에서 지역을 선택하면 해당 자치구의 핵심 경제 지표를 확인할 수 있습니다.</p>
+        </div>
+        
+        <div class="regional-box">
+            <div class="map-area">
+                <div class="map-guide-text">▼ 주요 자치구를 클릭해보세요</div>
+                <div class="map-wrapper">
+                    <img src="map_image.png" alt="서울시 자치구 지도" class="seoul-map-img">
+                    <div class="map-spot spot-mapo" onclick="updateDistrict('mapo')" id="spot-mapo"><div class="spot-dot"></div><div class="spot-label">마포구</div></div>
+                    <div class="map-spot spot-jongno" onclick="updateDistrict('jongno')" id="spot-jongno"><div class="spot-dot"></div><div class="spot-label">종로구</div></div>
+                    <div class="map-spot spot-seongdong" onclick="updateDistrict('seongdong')" id="spot-seongdong"><div class="spot-dot"></div><div class="spot-label">성동구</div></div>
+                    <div class="map-spot spot-yeongdeungpo" onclick="updateDistrict('yeongdeungpo')" id="spot-yeongdeungpo"><div class="spot-dot"></div><div class="spot-label">영등포구</div></div>
+                    <div class="map-spot spot-gangnam active" onclick="updateDistrict('gangnam')" id="spot-gangnam"><div class="spot-dot"></div><div class="spot-label">강남구</div></div>
+                </div>
+            </div>
+
+            <div class="info-area">
+                <div class="district-title">
+                    <span id="d-name">강남구</span>
+                    <span class="district-badge">경제 중심지</span>
+                </div>
+                <p class="district-desc" id="d-desc">서울시 자치구 중 가장 높은 GRDP를 기록하며, IT 및 금융/서비스업이 고도로 발달한 지역입니다.</p>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="ic-header">
+                            <div class="ic-title-group">
+                                <span class="ic-label">지역내총생산(GRDP)</span>
+                                <span class="ic-period" id="period-grdp">2021년 기준</span>
+                            </div>
+                            <span class="ic-icon">💰</span>
+                        </div>
+                        <div class="ic-value-row">
+                            <span class="ic-value" id="val-grdp">77조 9천억</span>
+                            <div class="ic-trend-group">
+                                <span class="ic-trend-label" id="comp-grdp">전년 대비</span>
+                                <span class="ic-trend" id="trend-grdp" style="color:#D32F2F">▲ 4.5%</span>
+                            </div>
+                        </div>
+                        <div class="ic-detail" id="detail-grdp">서울시 전체의 17% 차지, 전년 대비 성장률 1위 유지 중</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-header">
+                            <div class="ic-title-group">
+                                <span class="ic-label">주요 산업</span>
+                                <span class="ic-period" id="period-industry">2022년 기준</span>
+                            </div>
+                            <span class="ic-icon">🏢</span>
+                        </div>
+                        <div class="ic-value-row">
+                            <span class="ic-value" id="val-industry" style="font-size:22px;">정보통신/금융</span>
+                        </div>
+                        <div class="ic-detail" id="detail-industry">테헤란로 중심 IT 클러스터 및 벤처 기업 집중 분포</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-header">
+                            <div class="ic-title-group">
+                                <span class="ic-label">상권 활력도(매출)</span>
+                                <span class="ic-period" id="period-market">2024.1Q 기준</span>
+                            </div>
+                            <span class="ic-icon">🏪</span>
+                        </div>
+                        <div class="ic-value-row">
+                            <span class="ic-value" id="val-market">최상위</span>
+                            <div class="ic-trend-group">
+                                <span class="ic-trend-label" id="comp-market">전분기 대비</span>
+                                <span class="ic-trend" id="trend-market" style="color:#D32F2F">▲ 12%</span>
+                            </div>
+                        </div>
+                        <div class="ic-detail" id="detail-market">일 유동인구 50만 명, 식음료 및 명품 소비 활발</div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="ic-header">
+                            <div class="ic-title-group">
+                                <span class="ic-label">고용률</span>
+                                <span class="ic-period" id="period-job">2023 하반기</span>
+                            </div>
+                            <span class="ic-icon">👥</span>
+                        </div>
+                        <div class="ic-value-row">
+                            <span class="ic-value" id="val-job">59.8%</span>
+                            <div class="ic-trend-group">
+                                <span class="ic-trend-label" id="comp-job">실업률</span>
+                                <span class="ic-trend" id="trend-job" style="color:#888; font-weight:400;">2.8%</span>
+                            </div>
+                        </div>
+                        <div class="ic-detail" id="detail-job">전문직 종사자 비중 높음, 청년 고용률 지속 상승세</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>분야별 경제 지표 탐색</h2>
+            <p>경제 구조부터 시민 생활까지, 9가지 주제별 상세 데이터를 제공합니다.</p>
+        </div>
+        <div class="cat-grid">
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="경제 구조"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🏛️</span><h3 class="card-title">경제 구조/성장</h3></div>
+                    <div class="card-desc">나라 또는 지역의 경제 규모, 성장 수준, 경제력을 나타내는 지표들로 선정. GRDP, 1인당 소득, 수출입 등 지표를 활용하여 경제 전반을 설명</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics01.do" target="_blank" class="data-item-link"><div class="data-item">서울시 1인당 지역총생산 및 지출 통계</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics02.do" target="_blank" class="data-item-link"><div class="data-item">경제활동별 지역내총생산(GRDP)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics03.do" target="_blank" class="data-item-link"><div class="data-item">자치구별 1인당 지역총생산 및 수준지수 통계(1인당 GRDP)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics04.do" target="_blank" class="data-item-link"><div class="data-item">수출/수입 통계</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics05.do" target="_blank" class="data-item-link"><div class="data-item">재정력 지수 및 재정자립도</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="경기 지수"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">📈</span><h3 class="card-title">경기 지수</h3></div>
+                    <div class="card-desc">현재 경제가 활발한지 침체되었는지 등 경기의 흐름과 상태를 보여주는 지표로 경기 순환을 파악하는 데 활용</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics06.do" target="_blank" class="data-item-link"><div class="data-item">기업경기실사지수(BSI)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics07.do" target="_blank" class="data-item-link"><div class="data-item">소상공인경기실사지수(BSI)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics08.do" target="_blank" class="data-item-link"><div class="data-item">소비자체감경기지수(CSI)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics09.do" target="_blank" class="data-item-link"><div class="data-item">경제심리지수(ESI)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics10.do" target="_blank" class="data-item-link"><div class="data-item">서울시 광공업생산지수</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics11.do" target="_blank" class="data-item-link"><div class="data-item">서울시 서비스업생산지수</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics12.do" target="_blank" class="data-item-link"><div class="data-item">가계부채지수동향</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics13.do" target="_blank" class="data-item-link"><div class="data-item">기업신용지수동향</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics14.do" target="_blank" class="data-item-link"><div class="data-item">자영업경기지수동향</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics15.do" target="_blank" class="data-item-link"><div class="data-item">서울 소비경기지수</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80" alt="산업"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🏗️</span><h3 class="card-title">산업</h3></div>
+                    <div class="card-desc">산업의 구조 변화, 업종별 활동, 기업 활동 수준 등을 나타내며 지역별 성장 산업 분석할 수 있음</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics16.do" target="_blank" class="data-item-link"><div class="data-item">시군구별 사업체, 종사자 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics17.do" target="_blank" class="data-item-link"><div class="data-item">유형별 사업체, 종사자 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics18.do" target="_blank" class="data-item-link"><div class="data-item">산업별 여성 대표자 사업체 및 여성 종사자 수</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80" alt="창업/자영업"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🚪</span><h3 class="card-title">창업/자영업</h3></div>
+                    <div class="card-desc">자영업자의 창업, 폐업, 사업체의 운영 현황을 보여주는 지표로 자영업 시장의 현황을 파악하는데 활용</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics19.do" target="_blank" class="data-item-link"><div class="data-item">신규벤처 투자액</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics20.do" target="_blank" class="data-item-link"><div class="data-item">영세자영업 운영 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics21.do" target="_blank" class="data-item-link"><div class="data-item">사업체 창업률</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics22.do" target="_blank" class="data-item-link"><div class="data-item">자치구별 상권 현황</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=800&q=80" alt="고용 및 소득"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">💼</span><h3 class="card-title">고용 및 소득</h3></div>
+                    <div class="card-desc">일자리와 근로자 소득, 고용 구조에 관한 지표</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics23.do" target="_blank" class="data-item-link"><div class="data-item">임금 및 근로시간</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics24.do" target="_blank" class="data-item-link"><div class="data-item">시도별 피보험자 취득/상실 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics25.do" target="_blank" class="data-item-link"><div class="data-item">서울시 시군구별 지역별고용조사(실업률, 고용률, 경제활동참가율)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics26.do" target="_blank" class="data-item-link"><div class="data-item">직업별 취업자 수</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics27.do" target="_blank" class="data-item-link"><div class="data-item">종사상지위별 취업자 수</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics28.do" target="_blank" class="data-item-link"><div class="data-item">지역별 월 평균 추정 소득</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=800&q=80" alt="물가"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🏷️</span><h3 class="card-title">물가</h3></div>
+                    <div class="card-desc">재화와 서비스의 가격 수준 및 인플레이션 추이를 보여주는 지표</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics29.do" target="_blank" class="data-item-link"><div class="data-item">소비자물가지수(CPI)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics30.do" target="_blank" class="data-item-link"><div class="data-item">생활물가지수 통계</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics31.do" target="_blank" class="data-item-link"><div class="data-item">가격정보(외식비)</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80" alt="소비"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🛒</span><h3 class="card-title">소비</h3></div>
+                    <div class="card-desc">시민들의 소비 규모와 성향, 소비 트렌드를 보여주는 지표</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics32.do" target="_blank" class="data-item-link"><div class="data-item">소매판매액지수</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics33.do" target="_blank" class="data-item-link"><div class="data-item">개인 신용카드 사용액</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=800&q=80" alt="가계 금융"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">💰</span><h3 class="card-title">가계 금융</h3></div>
+                    <div class="card-desc">가계의 금융 상태(소득, 대출, 예금)을 보여주는 지표로 경제적 여유 및 재무 건전성을 파악에 활용</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics34.do" target="_blank" class="data-item-link"><div class="data-item">월별 예금은행 금융 동향</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics35.do" target="_blank" class="data-item-link"><div class="data-item">서울시 가계 자산 및 부채 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics36.do" target="_blank" class="data-item-link"><div class="data-item">서울시민 평균 소득, 소비, 대출 현황</div></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-visual"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" alt="부동산"></div>
+                <div class="card-body">
+                    <div class="card-title-row"><span class="card-icon">🏠</span><h3 class="card-title">부동산</h3></div>
+                    <div class="card-desc">주택 가격, 거래량, 공급 상황 등 부동산 관련 경제활동을 나타내는 지표로 부동산 흐름 파악에 활용</div>
+                    <div class="data-list">
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics37.do" target="_blank" class="data-item-link"><div class="data-item">서울시 건설수주액</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics38.do" target="_blank" class="data-item-link"><div class="data-item">서울시 주택건설/규모/유형별 준공/착공실적</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics39.do" target="_blank" class="data-item-link"><div class="data-item">서울시 주택건설 분양실적</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics40.do" target="_blank" class="data-item-link"><div class="data-item">부동산 자산</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics41.do" target="_blank" class="data-item-link"><div class="data-item">미분양주택 현황</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics42.do" target="_blank" class="data-item-link"><div class="data-item">지가변동률</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics43.do" target="_blank" class="data-item-link"><div class="data-item">주택가격지수(매매/전세)</div></a>
+<a href="https://bspdev.kro.kr/bsp/wgs/economics/economics44.do" target="_blank" class="data-item-link"><div class="data-item">부동산 거래현황</div></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const districtData = {
+            'gangnam': {
+                name: '강남구', badge: '경제 중심지',
+                desc: '서울시 자치구 중 가장 높은 GRDP를 기록하며, IT 및 금융/서비스업이 고도로 발달한 지역입니다.',
+                grdp: '77조 9천억', grdpTrend: '▲ 4.5%', grdpComp: '전년 대비', grdpPeriod: '2021년 기준',
+                industry: '정보통신/금융', industryPeriod: '2022년 기준',
+                market: '최상위', marketTrend: '▲ 12%', marketComp: '전분기 대비', marketPeriod: '2024.1Q 기준',
+                job: '59.8%', jobTrend: '2.8%', jobComp: '실업률', jobPeriod: '2023 하반기',
+                grdpDetail: '서울시 전체의 17% 차지, 전년 대비 성장률 1위 유지 중',
+                industryDetail: '테헤란로 중심 IT 클러스터 및 벤처 기업 집중 분포',
+                marketDetail: '일 유동인구 50만 명, 식음료 및 명품 소비 활발',
+                jobDetail: '전문직 종사자 비중 높음, 청년 고용률 지속 상승세'
+            },
+            'jongno': {
+                name: '종로구', badge: '역사/문화/행정',
+                desc: '주요 대기업 본사와 행정 기관이 밀집해 있으며, 유동인구가 많아 상권이 발달한 도심 지역입니다.',
+                grdp: '35조 7천억', grdpTrend: '▲ 3.2%', grdpComp: '전년 대비', grdpPeriod: '2021년 기준',
+                industry: '금융/도소매', industryPeriod: '2022년 기준',
+                market: '활발', marketTrend: '▲ 5%', marketComp: '전분기 대비', marketPeriod: '2024.1Q 기준',
+                job: '56.2%', jobTrend: '3.1%', jobComp: '실업률', jobPeriod: '2023 하반기',
+                grdpDetail: '도심권역 중 GRDP 상위권, 관광 및 서비스업 부가가치 높음',
+                industryDetail: '광화문/종각 중심 대기업 본사 및 금융사 밀집',
+                marketDetail: '관광객 유입 증가로 요식업 매출 전년비 5% 상승',
+                jobDetail: '주간 활동 인구 대비 상주 인구 고용률은 평균 수준'
+            },
+            'mapo': {
+                name: '마포구', badge: '미디어/콘텐츠',
+                desc: '상암 DMC를 중심으로 미디어 산업이 발달했으며, 홍대 상권 등 청년층 유동인구가 풍부합니다.',
+                grdp: '22조 1천억', grdpTrend: '▲ 3.0%', grdpComp: '전년 대비', grdpPeriod: '2021년 기준',
+                industry: '출판/방송', industryPeriod: '2022년 기준',
+                market: '매우 활발', marketTrend: '▲ 8%', marketComp: '전분기 대비', marketPeriod: '2024.1Q 기준',
+                job: '60.5%', jobTrend: '3.5%', jobComp: '실업률', jobPeriod: '2023 하반기',
+                grdpDetail: '방송/미디어 산업 성장으로 최근 5년간 연평균 3% 성장',
+                industryDetail: '상암 DMC 디지털미디어시티, 출판단지 등 특화지구',
+                marketDetail: '홍대/연남동 상권 확장으로 2030 소비 집중',
+                jobDetail: '청년 창업 및 프리랜서 활동 비율 서울시 1위'
+            },
+            'yeongdeungpo': {
+                name: '영등포구', badge: '금융 허브',
+                desc: '여의도를 포함하여 증권, 은행 등 금융 산업이 집중되어 있으며 서울의 3대 도심 중 하나입니다.',
+                grdp: '44조 2천억', grdpTrend: '▲ 3.8%', grdpComp: '전년 대비', grdpPeriod: '2021년 기준',
+                industry: '금융/보험', industryPeriod: '2022년 기준',
+                market: '양호', marketTrend: '▲ 4%', marketComp: '전분기 대비', marketPeriod: '2024.1Q 기준',
+                job: '62.1%', jobTrend: '2.5%', jobComp: '실업률', jobPeriod: '2023 하반기',
+                grdpDetail: '여의도 금융권 실적 호조로 GRDP 꾸준한 상승세',
+                industryDetail: '한국거래소, 주요 증권사 본점 및 핀테크 랩 위치',
+                marketDetail: '더현대 서울 등 대형 복합쇼핑몰 중심 소비 활성화',
+                jobDetail: '금융 전문 인력 및 사무직 종사자 비율 매우 높음'
+            },
+            'seongdong': {
+                name: '성동구', badge: '신성장/소셜벤처',
+                desc: '성수동을 중심으로 소셜 벤처와 스타트업이 모여들며, 젊은 층이 선호하는 핫플레이스 상권입니다.',
+                grdp: '15조 8천억', grdpTrend: '▲ 6.2%', grdpComp: '전년 대비', grdpPeriod: '2021년 기준',
+                industry: '지식산업', industryPeriod: '2022년 기준',
+                market: '급성장', marketTrend: '▲ 15%', marketComp: '전분기 대비', marketPeriod: '2024.1Q 기준',
+                job: '58.9%', jobTrend: '3.2%', jobComp: '실업률', jobPeriod: '2023 하반기',
+                grdpDetail: '지식산업센터 입주 증가로 제조업에서 지식기반산업으로 전환 중',
+                industryDetail: '성수동 붉은벽돌거리 중심 패션/디자인/스타트업 밀집',
+                marketDetail: '팝업스토어 성지로 부상하며 주말 유동인구 급증',
+                jobDetail: '2030 청년층 유입으로 고용의 질적 개선 뚜렷'
+            }
+        };
+
+        function updateDistrict(id) {
+            document.querySelectorAll('.map-spot').forEach(el => el.classList.remove('active'));
+            const spot = document.getElementById('spot-' + id);
+            if(spot) spot.classList.add('active');
+
+            const data = districtData[id];
+            
+            // Text Update
+            document.getElementById('d-name').innerText = data.name;
+            document.querySelector('.district-badge').innerText = data.badge;
+            document.getElementById('d-desc').innerText = data.desc;
+            
+            // Reference Period Update
+            document.getElementById('period-grdp').innerText = data.grdpPeriod;
+            document.getElementById('period-industry').innerText = data.industryPeriod;
+            document.getElementById('period-market').innerText = data.marketPeriod;
+            document.getElementById('period-job').innerText = data.jobPeriod;
+
+            // Trend Labels
+            document.getElementById('comp-grdp').innerText = data.grdpComp;
+            document.getElementById('comp-market').innerText = data.marketComp;
+            document.getElementById('comp-job').innerText = data.jobComp;
+
+            // Values & Trends
+            updateValue('val-grdp', data.grdp);
+            updateValue('val-industry', data.industry);
+            updateValue('val-market', data.market);
+            updateValue('val-job', data.job);
+            
+            document.getElementById('trend-grdp').innerText = data.grdpTrend;
+            document.getElementById('trend-market').innerText = data.marketTrend;
+            document.getElementById('trend-job').innerText = data.jobTrend;
+
+            // Details
+            document.getElementById('detail-grdp').innerText = data.grdpDetail;
+            document.getElementById('detail-industry').innerText = data.industryDetail;
+            document.getElementById('detail-market').innerText = data.marketDetail;
+            document.getElementById('detail-job').innerText = data.jobDetail;
+        }
+
+        function updateValue(id, value) {
+            const el = document.getElementById(id);
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.innerText = value;
+                el.style.opacity = 1;
+            }, 200);
+        }
+
+        function playVideo() {
+            const video = document.getElementById('heroVideo');
+            const overlay = document.getElementById('videoOverlay');
+            if (video.paused) {
+                video.play();
+                video.controls = true;
+                overlay.style.opacity = '0';
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
+            }
+        }
+    </script>
+
+</body>
+</html>
