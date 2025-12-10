@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>서울 데이터 허브 | 경제관</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
     <style>
         /* 1. 기본 설정 */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', 'Malgun Gothic', sans-serif; }
+        /* font-family에 Pretendard를 최우선 적용 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif; }
         body { background-color: #f8f9fa; color: #333; line-height: 1.5; overflow-x: hidden; }
         a { text-decoration: none; color: inherit; }
         button { cursor: pointer; font-family: inherit; border: none; background: transparent; }
@@ -19,25 +23,18 @@
             --seoul-blue: #0052A4; --seoul-sky: #4CA4F5; --increase-red: #D32F2F; --decrease-blue: #1976D2; 
         }
 
-        /* 2. Hero Section (Brightened) */
+        /* 2. Hero Section */
         .hero-wrap {
-            /* [수정] 밝고 화사한 서울 블루 그라데이션 적용 */
             background: linear-gradient(135deg, #0052A4 0%, #0072CE 40%, #4CA4F5 100%);
             color: white; padding: 100px 0 220px; margin-bottom: 60px;
             position: relative; overflow: hidden;
         }
 
-        /* [수정] Stock Image Visibility */
         .hero-custom-bg {
             position: absolute; top: 0; right: 0; width: 100%; height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1649003515353-c58a239cf662?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=1964&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            /* 투명도를 높여 이미지가 더 잘 보이게 조정 */
-            opacity: 0.4; 
-            z-index: 1;
-            /* 밝은 배경과 어울리는 블렌딩 모드 */
-            mix-blend-mode: soft-light; 
+            background-image: url('https://images.unsplash.com/photo-1611974765270-ca1258634369?q=80&w=1964&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+            opacity: 0.4; z-index: 1; mix-blend-mode: soft-light; 
         }
 
         .hero-aurora {
@@ -48,14 +45,11 @@
         }
         @keyframes auroraMove { 0% { transform: translate(0, 0); } 100% { transform: translate(-50px, 50px); } }
 
-        /* Floating Economic Elements */
         .floating-obj {
             position: absolute; border-radius: 50%;
             background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.2));
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.4);
-            z-index: 2;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.4);
+            z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             animation: floatObj 6s infinite ease-in-out;
         }
         .obj-1 { width: 60px; height: 60px; top: 15%; right: 15%; animation-delay: 0s; opacity: 0.6; }
@@ -71,25 +65,15 @@
         .hero-text { flex: 0.8; text-shadow: 0 2px 5px rgba(0,0,0,0.1); } 
         
         .hero-title { 
-            font-size: 52px; font-weight: 800; line-height: 1.2; margin-bottom: 24px; 
+            font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 24px; 
             letter-spacing: -1.5px; word-break: keep-all; 
         }
         
-        /* 텍스트 강조 스타일 (밝은 배경용) */
-        .text-highlight { 
-            color: #fff; 
-            text-shadow: 0 0 20px rgba(76, 164, 245, 0.8);
-        }
-        
-        .text-accent { 
-            color: #FFD700; /* 금색 유지 */
-            font-weight: 700; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            border-bottom: 2px solid rgba(255, 215, 0, 0.5);
-        }
+        .text-highlight { color: #fff; text-shadow: 0 0 20px rgba(76, 164, 245, 0.8); }
+        .text-accent { color: #FFD700; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.2); border-bottom: 2px solid rgba(255, 215, 0, 0.5); }
 
         .hero-desc { 
-            font-size: 22px; color: rgba(255,255,255,0.95); line-height: 1.7; font-weight: 400; 
+            font-size: 19px; color: rgba(255,255,255,0.95); line-height: 1.7; font-weight: 400; 
             margin-bottom: 0; padding-left: 20px; border-left: 4px solid #FFD700; 
         }
         
@@ -100,13 +84,11 @@
             background: #000; border-radius: 20px; overflow: hidden;
             border: 4px solid rgba(255,255,255,0.3);
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            transition: transform 0.3s;
-            cursor: pointer;
+            transition: transform 0.3s; cursor: pointer;
         }
         .video-frame:hover { transform: scale(1.02); border-color: #fff; }
         .hero-video-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
-        /* Video Overlay */
         .video-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 82, 164, 0.4); 
@@ -162,7 +144,6 @@
         .map-spot:hover { z-index: 10; transform: translate(-50%, -60%); }
         .map-spot:hover .spot-dot, .map-spot.active .spot-dot { background-color: #fff; border-color: var(--seoul-blue); transform: scale(1.3); animation: none; box-shadow: 0 0 0 4px rgba(0, 82, 164, 0.2); }
         .map-spot:hover .spot-label, .map-spot.active .spot-label { background-color: var(--seoul-blue); color: #fff; box-shadow: 0 4px 15px rgba(0, 82, 164, 0.4); opacity: 1; }
-
         @keyframes pulse-blue { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 82, 164, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 82, 164, 0); } }
 
         .spot-jongno { top: 40%; left: 50%; }
@@ -254,7 +235,7 @@
                     <span class="text-highlight">데이터로 진단하다</span>
                 </h1>
                 <p class="hero-desc">
-                    <span class="text-accent">성장, 물가, 고용 등 9대 핵심 분야</span>의 입체적 분석.<br>
+                    <span class="text-accent">경제 성장의 흐름, 물가, 고용 등 9대 핵심 분야</span>에 대한 입체적인 분석.<br>
                     서울 데이터 허브 경제관을 통해 <strong>복잡한 경제 흐름을 한 눈에 파악</strong>할 수 있습니다.
                 </p>
             </div>
@@ -323,10 +304,8 @@
         <div class="regional-box">
             <div class="map-area">
                 <div class="map-guide-text">▼ 주요 자치구를 클릭해보세요</div>
-                
                 <div class="map-wrapper">
                     <img src="map_image.png" alt="서울시 자치구 지도" class="seoul-map-img">
-                    
                     <div class="map-spot spot-mapo" onclick="updateDistrict('mapo')" id="spot-mapo"><div class="spot-dot"></div><div class="spot-label">마포구</div></div>
                     <div class="map-spot spot-jongno" onclick="updateDistrict('jongno')" id="spot-jongno"><div class="spot-dot"></div><div class="spot-label">종로구</div></div>
                     <div class="map-spot spot-seongdong" onclick="updateDistrict('seongdong')" id="spot-seongdong"><div class="spot-dot"></div><div class="spot-label">성동구</div></div>
