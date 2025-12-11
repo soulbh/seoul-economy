@@ -240,15 +240,12 @@
                 </p>
             </div>
             <div class="hero-video">
-                <div class="video-frame" onclick="playVideo()">
+                <div class="video-frame" id="videoContainer" onclick="playYouTube()">
                     <div class="video-overlay" id="videoOverlay">
                         <div class="custom-play-btn"></div>
                         <div class="video-title-overlay">서울 데이터 허브 경제관 소개</div>
                     </div>
-                    <video id="heroVideo" class="hero-video-player" poster="https://plus.unsplash.com/premium_photo-1683288662019-c92caea8276d?q=80&w=1200&auto=format&fit=crop">
-                        <source src="intro_video.mp4" type="video/mp4">
-                        브라우저가 동영상을 지원하지 않습니다.
-                    </video>
+                    <img src="https://plus.unsplash.com/premium_photo-1683288662019-c92caea8276d?q=80&w=1200&auto=format&fit=crop" class="hero-video-player" alt="Video Thumbnail">
                 </div>
             </div>
         </div>
@@ -646,16 +643,11 @@
             }, 200);
         }
 
-        function playVideo() {
-            const video = document.getElementById('heroVideo');
-            const overlay = document.getElementById('videoOverlay');
-            
-            if (video.paused) {
-                video.play();
-                video.controls = true;
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; }, 300);
-            }
+        function playYouTube() {
+            const container = document.getElementById('videoContainer');
+            // Using ID -Ltpx7CO27c
+            container.innerHTML = '<iframe class="hero-video-player" src="https://www.youtube.com/embed/-Ltpx7CO27c?autoplay=1&rel=0&mute=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+            container.removeAttribute('onclick');
         }
     </script>
 
